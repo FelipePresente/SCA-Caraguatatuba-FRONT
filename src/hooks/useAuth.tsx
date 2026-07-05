@@ -35,24 +35,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (credentials: LoginCredentials) => {
-    setLoading(true);
     try {
       await authService.login(credentials);
       await refreshUser();
     } catch (error) {
-      setLoading(false);
       throw error;
     }
   };
 
   const signUp = async (credentials: SignUpCredentials) => {
-    setLoading(true);
     try {
       await authService.signUp(credentials);
       await authService.login(credentials);
       await refreshUser();
     } catch (error) {
-      setLoading(false);
       throw error;
     }
   };
@@ -68,7 +64,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const isAuthenticated = !!user;
-  const roleName = user?.role?.name ?? (user?.role as unknown as string) ?? '';
+  const roleName = user?.role ?? '';
   const isAdmin = roleName.toUpperCase() === 'ADMIN';
 
   return (

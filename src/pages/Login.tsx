@@ -1,45 +1,124 @@
+import React, { useState } from 'react';
 import { useLoginForm } from '../hooks/useLoginForm';
-import { Link } from 'react-router-dom';
+import { CrestLogo } from '../components/CrestLogo';
+import { Eye, EyeOff, Menu } from 'lucide-react';
 
-export const Login = () => {
+export const Login: React.FC = () => {
   const { register, submit, error, isSubmitting } = useLoginForm();
+  const [showPassword, setShowPassword] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div>
-      <h2>Login</h2>
-
-      {error && (
-        <div style={{ color: 'red' }}>
-          {error}
+    <div className="min-h-screen flex flex-col justify-between bg-gray-50 text-gray-800 font-sans">
+      
+      {/* HEADER */}
+      <header className="bg-[#4180ab] text-white py-3 px-6 shadow-md flex items-center justify-between h-16 relative">
+        <div className="text-2xl font-bold tracking-wider select-none">
+          SCA
         </div>
-      )}
+        
+        {/* Middle Crest Logo */}
+        <div className="absolute left-1/2 transform -translate-x-1/2">
+          <CrestLogo size={46} className="bg-white/10 rounded-full p-0.5" />
+        </div>
 
-      <form onSubmit={submit}>
+        {/* Right Menu Icon (Hamburger) */}
         <div>
-          <label>Username: </label>
-          <input
-            type="text"
-            {...register('username', { required: 'Username é obrigatório' })}
-          />
+          <button 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="focus:outline-none hover:bg-black/10 p-1.5 rounded-lg transition-colors"
+            aria-label="Menu"
+          >
+            <Menu className="w-7 h-7" />
+          </button>
         </div>
 
-        <div>
-          <label>Password: </label>
-          <input
-            type="password"
-            {...register('password', { required: 'Senha é obrigatória' })}
-          />
+        {/* Mobile Menu Dropdown */}
+        {mobileMenuOpen && (
+          <div className="absolute top-16 right-4 bg-white text-gray-800 rounded-xl shadow-xl border border-gray-100 py-2 w-48 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+            <a href="https://www.caraguatatuba.sp.gov.br" target="_blank" rel="noopener noreferrer" className="block px-4 py-2 hover:bg-gray-100 text-sm font-medium">
+              Site do Governo
+            </a>
+            <a href="mailto:suporte@caraguatatuba.sp.gov.br" className="block px-4 py-2 hover:bg-gray-100 text-sm font-medium">
+              Fale Conosco
+            </a>
+          </div>
+        )}
+      </header>
+
+      {/* BODY CONTENT - Centered Card */}
+      <main className="flex-1 flex items-center justify-center p-4">
+        <div className="relative bg-[#d9d9d9] w-full max-w-sm sm:max-w-md rounded-[2rem] pt-16 pb-8 px-6 sm:px-10 shadow-lg text-center mt-12 mb-12">
+          
+          {/* Overlapping Crest Logo on top */}
+          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-full p-1.5 shadow-md">
+            <CrestLogo size={100} />
+          </div>
+
+          <h2 className="text-[#3b759e] font-extrabold text-sm sm:text-base tracking-widest uppercase mb-8 mt-2">
+            Sou Instituição Escolar
+          </h2>
+
+          {/* Form */}
+          <form onSubmit={submit} className="space-y-6">
+            
+            {/* Institution / Username Input */}
+            <div className="text-left">
+              <div className="relative bg-white rounded-lg shadow-sm">
+                <input
+                  type="text"
+                  placeholder="INSTITUIÇÃO"
+                  {...register('username', { required: 'Nome da instituição é obrigatório' })}
+                  className="w-full bg-transparent px-4 py-3 text-center sm:text-left text-sm font-semibold text-gray-700 placeholder-[#799db6] focus:outline-none focus:ring-2 focus:ring-[#4180ab] rounded-lg uppercase"
+                />
+              </div>
+            </div>
+
+            {/* Password Input */}
+            <div className="text-left">
+              <div className="relative bg-white rounded-lg shadow-sm flex items-center">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="SENHA"
+                  {...register('password', { required: 'Senha é obrigatória' })}
+                  className="w-full bg-transparent px-4 py-3 text-center sm:text-left text-sm font-semibold text-gray-700 placeholder-[#799db6] focus:outline-none focus:ring-2 focus:ring-[#4180ab] rounded-lg"
+                />
+                
+                {/* Visibility Toggle Icon */}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 text-[#4180ab] hover:text-[#2d6e9c] transition-colors focus:outline-none"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 text-red-600 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold border border-red-150 animate-pulse text-center">
+                {error}
+              </div>
+            )}
+
+            {/* Confirm Button */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-[#4180ab] hover:bg-[#346b91] text-white py-3 rounded-lg font-bold text-sm sm:text-base tracking-wider transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-50"
+            >
+              {isSubmitting ? 'CARREGANDO...' : 'CONFIRMAR'}
+            </button>
+          </form>
         </div>
+      </main>
 
-        <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Entrando...' : 'Entrar'}
-        </button>
-      </form>
+      {/* FOOTER */}
+      <footer className="bg-[#4180ab] text-white text-center py-4 font-bold text-lg tracking-widest uppercase">
+        Footer
+      </footer>
 
-      <p>
-        Não tem uma conta?{' '}
-        <Link to="/signup">Cadastre-se</Link>
-      </p>
     </div>
   );
 };

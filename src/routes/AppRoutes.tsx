@@ -18,7 +18,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
-  return isAuthenticated ? <>{children}</> : <Navigate to="/signup" replace />;
+  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
 };
 
 // Guard for public pages (Login, SignUp)
