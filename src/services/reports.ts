@@ -4,8 +4,8 @@ import type { SchoolFoodSummary } from '../interfaces/SchoolFoodSummary';
 
 export interface CreateReportData {
   foodId: string;
-  receivedKg: number;
-  wastedKg: number;
+  receivedKg?: number;
+  wastedKg?: number;
 }
 
 export const reportsService = {
@@ -22,8 +22,8 @@ export const reportsService = {
   async createReport(data: CreateReportData): Promise<unknown> {
     const response = await api.post('/reports', {
       foodId: data.foodId,
-      receivedKg: data.receivedKg,
-      wastedKg: data.wastedKg,
+      receivedKg: data.receivedKg !== undefined ? data.receivedKg : null,
+      wastedKg: data.wastedKg !== undefined ? data.wastedKg : null,
     });
     return response.data;
   }

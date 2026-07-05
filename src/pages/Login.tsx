@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useLoginForm } from '../hooks/useLoginForm';
-import { CrestLogo } from '../components/CrestLogo';
+import logoImg from '../assets/logo.png';
 import { Eye, EyeOff, Menu } from 'lucide-react';
+import { Footer } from '../components/Footer';
 
 export const Login: React.FC = () => {
   const { register, submit, error, isSubmitting } = useLoginForm();
@@ -19,7 +20,7 @@ export const Login: React.FC = () => {
         
         {/* Middle Crest Logo */}
         <div className="absolute left-1/2 transform -translate-x-1/2">
-          <CrestLogo size={46} className="bg-white/10 rounded-full p-0.5" />
+          <img src={logoImg} alt="Logo" className="w-[46px] h-[46px] object-contain bg-white/10 rounded-full p-0.5" />
         </div>
 
         {/* Right Menu Icon (Hamburger) */}
@@ -39,9 +40,6 @@ export const Login: React.FC = () => {
             <a href="https://www.caraguatatuba.sp.gov.br" target="_blank" rel="noopener noreferrer" className="block px-4 py-2 hover:bg-gray-100 text-sm font-medium">
               Site do Governo
             </a>
-            <a href="mailto:suporte@caraguatatuba.sp.gov.br" className="block px-4 py-2 hover:bg-gray-100 text-sm font-medium">
-              Fale Conosco
-            </a>
           </div>
         )}
       </header>
@@ -52,11 +50,11 @@ export const Login: React.FC = () => {
           
           {/* Overlapping Crest Logo on top */}
           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-full p-1.5 shadow-md">
-            <CrestLogo size={100} />
+            <img src={logoImg} alt="Logo" className="w-[100px] h-[100px] object-contain" />
           </div>
 
           <h2 className="text-[#3b759e] font-extrabold text-sm sm:text-base tracking-widest uppercase mb-8 mt-2">
-            Sou Instituição Escolar
+            Acesso ao Sistema
           </h2>
 
           {/* Form */}
@@ -67,8 +65,8 @@ export const Login: React.FC = () => {
               <div className="relative bg-white rounded-lg shadow-sm">
                 <input
                   type="text"
-                  placeholder="INSTITUIÇÃO"
-                  {...register('username', { required: 'Nome da instituição é obrigatório' })}
+                  placeholder="USUÁRIO"
+                  {...register('username', { required: 'Nome de usuário é obrigatório' })}
                   className="w-full bg-transparent px-4 py-3 text-center sm:text-left text-sm font-semibold text-gray-700 placeholder-[#799db6] focus:outline-none focus:ring-2 focus:ring-[#4180ab] rounded-lg uppercase"
                 />
               </div>
@@ -115,9 +113,7 @@ export const Login: React.FC = () => {
       </main>
 
       {/* FOOTER */}
-      <footer className="bg-[#4180ab] text-white text-center py-4 font-bold text-lg tracking-widest uppercase">
-        Footer
-      </footer>
+      <Footer />
 
     </div>
   );

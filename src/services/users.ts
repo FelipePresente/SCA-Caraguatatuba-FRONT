@@ -15,6 +15,17 @@ export const userService = {
     });
   },
 
+  async updateUser(data: { id: string; newUsername?: string; newPassword?: string }): Promise<void> {
+    const payload: Record<string, any> = { id: data.id };
+    if (data.newUsername && data.newUsername.trim() !== '') {
+      payload.newUsername = data.newUsername.trim();
+    }
+    if (data.newPassword && data.newPassword.trim() !== '') {
+      payload.newPassword = data.newPassword;
+    }
+    await api.put('/users', payload);
+  },
+
   async deleteUser(id: string): Promise<void> {
     await api.delete(`/users/${id}`);
   }

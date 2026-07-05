@@ -8,7 +8,8 @@ import type { Food } from '../interfaces/Food';
 import type { SchoolFoodSummary } from '../interfaces/SchoolFoodSummary';
 import type { UserResponse } from '../services/types';
 import FoodCard from '../components/FoodCard';
-import { CrestLogo } from '../components/CrestLogo';
+import logoImg from '../assets/logo.png';
+import { Footer } from '../components/Footer';
 import { 
   BarChart as RechartsBarChart, 
   Bar, 
@@ -21,37 +22,15 @@ import {
 import { 
   LogOut, 
   User, 
-  BarChart2, 
   Menu, 
   Check, 
   ArrowRight,
   Send,
   Trash2,
   X,
-  Plus
+  Plus,
+  Pencil
 } from 'lucide-react';
-
-// Inline SVG social icons (lucide-react does not export Instagram/Facebook)
-const InstagramIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-    <circle cx="12" cy="12" r="5"/>
-    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
-  </svg>
-);
-
-const FacebookIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
-  </svg>
-);
-
-const WhatsAppIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.117 1.526 5.845L0 24l6.335-1.502A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.785 9.785 0 01-4.99-1.37l-.358-.213-3.76.891.938-3.658-.233-.375A9.786 9.786 0 012.182 12c0-5.42 4.398-9.818 9.818-9.818 5.42 0 9.818 4.398 9.818 9.818 0 5.42-4.398 9.818-9.818 9.818z"/>
-  </svg>
-);
 
 export const Dashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -83,6 +62,11 @@ export const Dashboard: React.FC = () => {
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [adminError, setAdminError] = useState<string | null>(null);
   
+  // Edit user states
+  const [editingUser, setEditingUser] = useState<UserResponse | null>(null);
+  const [editUsername, setEditUsername] = useState('');
+  const [editPassword, setEditPassword] = useState('');
+  
   // Overlay/Modal/Form states for creation
   const [showNewUserForm, setShowNewUserForm] = useState(false);
   const [showNewFoodForm, setShowNewFoodForm] = useState(false);
@@ -101,9 +85,6 @@ export const Dashboard: React.FC = () => {
   const [submitStatus, setSubmitStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [submittingReport, setSubmittingReport] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Get Current Month name in PT-BR (e.g. JULHO)
-  const currentMonthName = new Date().toLocaleString('pt-BR', { month: 'long' }).toUpperCase();
 
   // Load basic data based on role
   const loadData = async () => {
@@ -189,16 +170,30 @@ export const Dashboard: React.FC = () => {
     e.preventDefault();
     if (!selectedSchoolFood) return;
 
-    const rKg = parseFloat(receivedKg);
-    const wKg = parseFloat(wastedKg);
+    const hasReceived = receivedKg.trim() !== '';
+    const hasWasted = wastedKg.trim() !== '';
 
-    if (isNaN(rKg) || rKg <= 0) {
-      setSubmitStatus({ type: 'error', message: 'A quantidade recebida (kg) deve ser positiva.' });
+    if (!hasReceived && !hasWasted) {
+      setSubmitStatus({ type: 'error', message: 'Deve ser fornecida a quantidade recebida ou a quantidade desperdiçada (ou ambas).' });
       return;
     }
-    if (isNaN(wKg) || wKg <= 0) {
-      setSubmitStatus({ type: 'error', message: 'A quantidade desperdiçada (kg) deve ser positiva.' });
-      return;
+
+    let rKg: number | undefined = undefined;
+    if (hasReceived) {
+      rKg = parseFloat(receivedKg);
+      if (isNaN(rKg) || rKg <= 0) {
+        setSubmitStatus({ type: 'error', message: 'A quantidade recebida (kg) deve ser positiva.' });
+        return;
+      }
+    }
+
+    let wKg: number | undefined = undefined;
+    if (hasWasted) {
+      wKg = parseFloat(wastedKg);
+      if (isNaN(wKg) || wKg <= 0) {
+        setSubmitStatus({ type: 'error', message: 'A quantidade desperdiçada (kg) deve ser positiva.' });
+        return;
+      }
     }
 
     setSubmittingReport(true);
@@ -226,6 +221,27 @@ export const Dashboard: React.FC = () => {
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newUsername || !newPassword || !newRole) return;
+
+    const usernameRegex = /^[a-zA-Z0-9]+$/;
+    const passwordRegex = /^\S+$/;
+
+    if (newUsername.length < 4 || newUsername.length > 16) {
+      setAdminError('O nome de usuário deve ter entre 4 e 16 caracteres.');
+      return;
+    }
+    if (!usernameRegex.test(newUsername)) {
+      setAdminError('O nome de usuário deve conter apenas letras e números, sem espaços.');
+      return;
+    }
+    if (newPassword.length < 8 || newPassword.length > 64) {
+      setAdminError('A senha deve ter entre 8 e 64 caracteres.');
+      return;
+    }
+    if (!passwordRegex.test(newPassword)) {
+      setAdminError('A senha não deve conter espaços.');
+      return;
+    }
+
     setActionSubmitting(true);
     setAdminError(null);
     try {
@@ -241,6 +257,65 @@ export const Dashboard: React.FC = () => {
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { message?: string } }; message?: string };
       setAdminError(axiosErr?.response?.data?.message || axiosErr?.message || 'Falha ao criar usuário.');
+    } finally {
+      setActionSubmitting(false);
+    }
+  };
+
+  const handleEditUser = (u: UserResponse) => {
+    setEditingUser(u);
+    setEditUsername(u.username);
+    setEditPassword('');
+    setShowNewUserForm(false);
+  };
+
+  const handleUpdateUserSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingUser) return;
+
+    const usernameRegex = /^[a-zA-Z0-9]+$/;
+    const passwordRegex = /^\S+$/;
+
+    const trimmedUsername = editUsername.trim();
+    const isUsernameChanged = trimmedUsername !== editingUser.username;
+
+    if (isUsernameChanged && trimmedUsername !== '') {
+      if (trimmedUsername.length < 4 || trimmedUsername.length > 16) {
+        setAdminError('O nome de usuário deve ter entre 4 e 16 caracteres.');
+        return;
+      }
+      if (!usernameRegex.test(trimmedUsername)) {
+        setAdminError('O nome de usuário deve conter apenas letras e números, sem espaços.');
+        return;
+      }
+    }
+
+    if (editPassword !== '') {
+      if (editPassword.length < 8 || editPassword.length > 64) {
+        setAdminError('A senha deve ter entre 8 e 64 caracteres.');
+        return;
+      }
+      if (!passwordRegex.test(editPassword)) {
+        setAdminError('A senha não deve conter espaços.');
+        return;
+      }
+    }
+
+    setActionSubmitting(true);
+    setAdminError(null);
+    try {
+      await userService.updateUser({
+        id: editingUser.id,
+        newUsername: isUsernameChanged ? trimmedUsername : undefined,
+        newPassword: editPassword ? editPassword : undefined
+      });
+      setEditingUser(null);
+      setEditUsername('');
+      setEditPassword('');
+      await loadAdminData();
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { message?: string } }; message?: string };
+      setAdminError(axiosErr?.response?.data?.message || axiosErr?.message || 'Falha ao atualizar usuário.');
     } finally {
       setActionSubmitting(false);
     }
@@ -302,7 +377,7 @@ export const Dashboard: React.FC = () => {
         {/* Header matching mobile/desktop designs */}
         <header className="bg-[#4180ab] text-white py-3 px-6 shadow-md flex items-center justify-between h-16 relative">
           <div className="flex items-center gap-3">
-            <CrestLogo size={42} className="bg-white/10 rounded-full p-0.5" />
+            <img src={logoImg} alt="Logo" className="w-[42px] h-[42px] object-contain bg-white/10 rounded-full p-0.5" />
             <span className="text-xl font-bold tracking-wider">SCA</span>
           </div>
 
@@ -393,7 +468,7 @@ export const Dashboard: React.FC = () => {
             {/* Middle Indicator Arrow (Desktop Only) */}
             <div className="hidden md:flex flex-col items-center justify-center text-[#4180ab] gap-2 px-2">
               <span className="text-xs font-black uppercase tracking-wider text-center">Informe os dados</span>
-              <div className="flex gap-1 animate-bounce">
+              <div className="flex gap-1">
                 <ArrowRight className="w-10 h-10 stroke-[2]" />
               </div>
             </div>
@@ -403,7 +478,7 @@ export const Dashboard: React.FC = () => {
               
               {/* Form title header */}
               <div className="bg-[#4180ab] text-white text-center py-4 font-bold text-lg tracking-widest uppercase">
-                Mês - {currentMonthName}
+                Registrar Dados
               </div>
 
               {selectedSchoolFood ? (
@@ -423,7 +498,6 @@ export const Dashboard: React.FC = () => {
                         <input
                           type="number"
                           step="0.01"
-                          required
                           value={receivedKg}
                           onChange={(e) => setReceivedKg(e.target.value)}
                           placeholder="Ex: 150.00"
@@ -438,7 +512,6 @@ export const Dashboard: React.FC = () => {
                         <input
                           type="number"
                           step="0.01"
-                          required
                           value={wastedKg}
                           onChange={(e) => setWastedKg(e.target.value)}
                           placeholder="Ex: 12.50"
@@ -479,41 +552,7 @@ export const Dashboard: React.FC = () => {
         </main>
 
         {/* Detailed Premium Footer */}
-        <footer className="bg-[#4180ab] text-white py-8 border-t border-[#346b91]">
-          <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
-            <div className="flex items-center gap-4">
-              <CrestLogo size={70} className="bg-white/10 rounded-full p-1" />
-              <div>
-                <h4 className="text-base font-black tracking-widest uppercase">Caraguatatuba</h4>
-                <p className="text-xs font-bold text-sky-100 tracking-wider">GOVERNO MUNICIPAL</p>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2 font-bold tracking-widest text-sm uppercase">
-              <a href="mailto:contato@caraguatatuba.sp.gov.br" className="hover:underline">
-                FALE CONOSCO:
-              </a>
-              <a href="https://www.caraguatatuba.sp.gov.br" target="_blank" rel="noopener noreferrer" className="hover:underline text-sky-100">
-                SITE DO GOVERNO
-              </a>
-            </div>
-
-            <div className="flex flex-col items-center md:items-end gap-2">
-              <span className="text-xs font-black tracking-widest uppercase">FEEDBACK</span>
-              <div className="flex gap-4">
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all">
-                  <InstagramIcon />
-                </a>
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all">
-                  <FacebookIcon />
-                </a>
-                <a href="https://wa.me" target="_blank" rel="noopener noreferrer" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all">
-                  <WhatsAppIcon />
-                </a>
-              </div>
-            </div>
-          </div>
-        </footer>
+        <Footer />
 
       </div>
     );
@@ -527,7 +566,7 @@ export const Dashboard: React.FC = () => {
         {/* Admin Header matching Mockup Menu */}
         <header className="bg-[#4180ab] text-white py-3 px-6 shadow-md flex items-center justify-between h-16 relative">
           <div className="flex items-center gap-3">
-            <CrestLogo size={42} className="bg-white/10 rounded-full p-0.5" />
+            <img src={logoImg} alt="Logo" className="w-[42px] h-[42px] object-contain bg-white/10 rounded-full p-0.5" />
             <span className="text-xl font-bold tracking-wider">SCA</span>
           </div>
 
@@ -594,15 +633,24 @@ export const Dashboard: React.FC = () => {
                           <span>{u.username}</span>
                           <span className="text-[10px] text-sky-100 lowercase">cargo: {u.role}</span>
                         </div>
-                        {u.username !== 'admin' && (
+                        <div className="flex items-center gap-1.5">
                           <button
-                            onClick={() => handleDeleteUser(u.id)}
-                            className="hover:text-red-200 p-1.5 focus:outline-none transition-colors"
-                            title="Apagar usuário"
+                            onClick={() => handleEditUser(u)}
+                            className="hover:text-amber-200 p-1.5 focus:outline-none transition-colors"
+                            title="Editar usuário"
                           >
-                            <Trash2 className="w-5 h-5" />
+                            <Pencil className="w-4 h-4" />
                           </button>
-                        )}
+                          {u.username !== 'admin' && (
+                            <button
+                              onClick={() => handleDeleteUser(u.id)}
+                              className="hover:text-red-200 p-1.5 focus:outline-none transition-colors"
+                              title="Apagar usuário"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -611,7 +659,40 @@ export const Dashboard: React.FC = () => {
 
               {/* Action Button & New User Form Toggle */}
               <div className="mt-6 border-t border-gray-300 pt-4">
-                {showNewUserForm ? (
+                {editingUser ? (
+                  <form onSubmit={handleUpdateUserSubmit} className="space-y-3 bg-white p-4 rounded-2xl shadow-sm border border-amber-350">
+                    <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+                      <span className="text-xs font-black uppercase text-amber-600">Editar Usuário ({editingUser.username})</span>
+                      <button type="button" onClick={() => setEditingUser(null)} className="text-gray-400 hover:text-gray-600">
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    <input
+                      type="text"
+                      placeholder="NOVO USERNAME (opcional)"
+                      value={editUsername}
+                      onChange={(e) => setEditUsername(e.target.value)}
+                      className="w-full bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg text-xs font-semibold text-gray-700 placeholder-gray-400 focus:outline-none"
+                    />
+
+                    <input
+                      type="password"
+                      placeholder="NOVA SENHA (opcional)"
+                      value={editPassword}
+                      onChange={(e) => setEditPassword(e.target.value)}
+                      className="w-full bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg text-xs font-semibold text-gray-700 placeholder-gray-400 focus:outline-none"
+                    />
+
+                    <button
+                      type="submit"
+                      disabled={actionSubmitting}
+                      className="w-full bg-amber-500 hover:bg-amber-600 text-white py-2 rounded-lg font-bold text-xs uppercase tracking-wider transition-colors disabled:opacity-50"
+                    >
+                      {actionSubmitting ? 'SALVANDO...' : 'SALVAR'}
+                    </button>
+                  </form>
+                ) : showNewUserForm ? (
                   <form onSubmit={handleCreateUser} className="space-y-3 bg-white p-4 rounded-2xl shadow-sm border border-gray-200">
                     <div className="flex justify-between items-center pb-2 border-b border-gray-100">
                       <span className="text-xs font-black uppercase text-[#3b759e]">Novo Usuário</span>
@@ -658,7 +739,7 @@ export const Dashboard: React.FC = () => {
                   </form>
                 ) : (
                   <button
-                    onClick={() => { setShowNewUserForm(true); setAdminError(null); }}
+                    onClick={() => { setShowNewUserForm(true); setEditingUser(null); setAdminError(null); }}
                     className="w-full bg-[#3b759e] hover:bg-[#2d6e9c] text-white py-3.5 rounded-xl font-black text-sm tracking-wider uppercase transition-colors shadow-sm flex items-center justify-center gap-1.5"
                   >
                     <Plus className="w-5 h-5 stroke-[3]" />
@@ -757,41 +838,7 @@ export const Dashboard: React.FC = () => {
         </main>
 
         {/* Footer */}
-        <footer className="bg-[#4180ab] text-white py-8 border-t border-[#346b91]">
-          <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
-            <div className="flex items-center gap-4">
-              <CrestLogo size={70} className="bg-white/10 rounded-full p-1" />
-              <div>
-                <h4 className="text-base font-black tracking-widest uppercase">Caraguatatuba</h4>
-                <p className="text-xs font-bold text-sky-100 tracking-wider">GOVERNO MUNICIPAL</p>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2 font-bold tracking-widest text-sm uppercase">
-              <a href="mailto:contato@caraguatatuba.sp.gov.br" className="hover:underline">
-                FALE CONOSCO:
-              </a>
-              <a href="https://www.caraguatatuba.sp.gov.br" target="_blank" rel="noopener noreferrer" className="hover:underline text-sky-100">
-                SITE DO GOVERNO
-              </a>
-            </div>
-
-            <div className="flex flex-col items-center md:items-end gap-2">
-              <span className="text-xs font-black tracking-widest uppercase">FEEDBACK</span>
-              <div className="flex gap-4">
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all">
-                  <InstagramIcon />
-                </a>
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all">
-                  <FacebookIcon />
-                </a>
-                <a href="https://wa.me" target="_blank" rel="noopener noreferrer" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all">
-                  <WhatsAppIcon />
-                </a>
-              </div>
-            </div>
-          </div>
-        </footer>
+        <Footer />
 
       </div>
     );
@@ -804,9 +851,7 @@ export const Dashboard: React.FC = () => {
       <header className="bg-[#4180ab] text-white sticky top-0 z-10 shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-white/10 p-2 rounded-xl">
-              <BarChart2 className="w-6 h-6" />
-            </div>
+            <img src={logoImg} alt="Logo" className="w-[42px] h-[42px] object-contain bg-white/10 rounded-full p-0.5" />
             <div>
               <h1 className="text-xl font-bold tracking-tight">SCA Dashboard</h1>
               <p className="text-[10px] text-sky-100 uppercase tracking-widest font-semibold">Seduc</p>
@@ -949,7 +994,7 @@ export const Dashboard: React.FC = () => {
                           labelFormatter={(label: any) => `Escola: ${label}`}
                           contentStyle={{ borderRadius: '12px', fontSize: '12px', fontWeight: 'bold' }}
                         />
-                        <Bar dataKey="moneySpent" fill="#059669" radius={[6, 6, 0, 0]} name="Dinheiro Gasto" />
+                        <Bar dataKey="moneySpent" fill="#000000" radius={[6, 6, 0, 0]} name="Dinheiro Gasto" />
                       </RechartsBarChart>
                     </ResponsiveContainer>
                   </div>
@@ -1063,6 +1108,7 @@ export const Dashboard: React.FC = () => {
           </>
         )}
       </main>
+      <Footer />
     </div>
   );
 };
