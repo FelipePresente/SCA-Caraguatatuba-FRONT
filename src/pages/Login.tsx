@@ -12,25 +12,27 @@ export const Login: React.FC = () => {
     <div className="min-h-screen flex flex-col justify-between bg-gray-50 text-gray-800 font-sans">
       
       {/* HEADER */}
-      <header className="bg-[#4180ab] text-white py-3 px-6 shadow-md flex items-center justify-between h-16 relative">
-        <div className="text-2xl font-bold tracking-wider select-none">
-          Sistema de Contabilidade Alimentícia
-        </div>
-        
-        {/* Middle Crest Logo */}
-        <div className="absolute left-1/2 transform -translate-x-1/2">
-          <img src={logoImg} alt="Logo" className="w-15 h-15 object-contain bg-white/10 rounded-full p-0.5" />
+      <header className="bg-[#4180ab] text-white py-3 px-4 sm:px-6 shadow-md flex items-center justify-between h-16">
+        {/* Logo + Title */}
+        <div className="flex items-center gap-3">
+          <img src={logoImg} alt="Logo" className="w-[42px] h-[42px] object-contain bg-white/10 rounded-full p-0.5 flex-shrink-0" />
+          {/* Mobile: abbreviation; Desktop: full name */}
+          <span className="font-bold tracking-wider select-none text-lg sm:hidden">SCA</span>
+          <span className="font-bold tracking-wider select-none text-xl hidden sm:inline">
+            Sistema de Contabilidade Alimentícia
+          </span>
         </div>
 
+        {/* Site da Prefeitura link */}
         <div>
-          <button
-            className="hover:underline font-black tracking-widest uppercase p-1.5 rounded-lg transition-colors"
-            aria-label="Menu"
+          <a
+            href="https://www.caraguatatuba.sp.gov.br"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:underline font-black tracking-widest uppercase p-1.5 rounded-lg transition-colors text-sm"
           >
-            <a href="https://www.caraguatatuba.sp.gov.br" target="_blank" rel="noopener noreferrer" className="">
-              Site da Prefeitura
-            </a>
-          </button>
+            Site da Prefeitura
+          </a>
         </div>
       </header>
 

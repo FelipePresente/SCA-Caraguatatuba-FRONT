@@ -377,23 +377,13 @@ export const Dashboard: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <img src={logoImg} alt="Logo" className="w-[42px] h-[42px] object-contain bg-white/10 rounded-full p-0.5" />
-              <div>
+              <div className="hidden sm:block">
                 <h1 className="text-xl font-bold tracking-tight">Sistema de Contabilidade Alimentícia</h1>
                 <p className="text-[10px] text-sky-100 uppercase tracking-widest font-semibold">Escola</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              {/* Admin Area Button */}
-              {isAdmin && (
-                <button
-                  onClick={() => setShowAdminPanel(true)}
-                  className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all"
-                >
-                  Área Administrativa
-                </button>
-              )}
-
+            <div className="flex items-center gap-2 sm:gap-3">
               {/* User Badge */}
               <div className="hidden sm:flex items-center gap-2 bg-white/15 px-3 py-1.5 rounded-full">
                 <User className="w-4 h-4 text-sky-100" />
@@ -408,10 +398,10 @@ export const Dashboard: React.FC = () => {
               {/* Logout button */}
               <button
                 onClick={logout}
-                className="flex items-center gap-2 bg-[#346b91] hover:bg-[#2d6e9c] text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 border border-white/20"
+                className="flex items-center gap-1.5 bg-[#346b91] hover:bg-[#2d6e9c] text-white px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 border border-white/20"
               >
                 <LogOut className="w-4 h-4" />
-                Sair
+                <span>Sair</span>
               </button>
             </div>
           </div>
@@ -562,16 +552,16 @@ export const Dashboard: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <img src={logoImg} alt="Logo" className="w-[42px] h-[42px] object-contain bg-white/10 rounded-full p-0.5" />
-              <div>
+              <div className="hidden sm:block">
                 <h1 className="text-xl font-bold tracking-tight">Sistema de Contabilidade Alimentícia</h1>
-                <p className="text-[10px] text-sky-100 uppercase tracking-widest font-semibold">Seduc Dashboard</p>
+                <p className="text-[10px] text-sky-100 uppercase tracking-widest font-semibold">Área Administrativa</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               <button
                 onClick={() => setShowAdminPanel(false)}
-                className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all"
+                className="bg-white/10 hover:bg-white/20 text-white px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all"
               >
                 Alimentação
               </button>
@@ -582,10 +572,10 @@ export const Dashboard: React.FC = () => {
               </div>
               <button
                 onClick={logout}
-                className="flex items-center gap-2 bg-[#346b91] hover:bg-[#2d6e9c] text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all border border-white/20"
+                className="flex items-center gap-1.5 bg-[#346b91] hover:bg-[#2d6e9c] text-white px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all border border-white/20"
               >
                 <LogOut className="w-4 h-4" />
-                Sair
+                <span>Sair</span>
               </button>
             </div>
           </div>
@@ -851,20 +841,20 @@ export const Dashboard: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src={logoImg} alt="Logo" className="w-[42px] h-[42px] object-contain bg-white/10 rounded-full p-0.5" />
-            <div>
+            <div className="hidden sm:block">
               <h1 className="text-xl font-bold tracking-tight">Sistema de Contabilidade Alimentícia</h1>
               <p className="text-[10px] text-sky-100 uppercase tracking-widest font-semibold">Seduc Dashboard</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* Admin Area Button */}
             {isAdmin && (
               <button
                 onClick={() => setShowAdminPanel(true)}
-                className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all"
+                className="bg-white/10 hover:bg-white/20 text-white px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all"
               >
-                Área Administrativa
+                Área Admin
               </button>
             )}
 
@@ -882,10 +872,10 @@ export const Dashboard: React.FC = () => {
             {/* Logout button */}
             <button
               onClick={logout}
-              className="flex items-center gap-2 bg-[#346b91] hover:bg-[#2d6e9c] text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 border border-white/20"
+              className="flex items-center gap-1.5 bg-[#346b91] hover:bg-[#2d6e9c] text-white px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 border border-white/20"
             >
               <LogOut className="w-4 h-4" />
-              Sair
+              <span>Sair</span>
             </button>
           </div>
         </div>
