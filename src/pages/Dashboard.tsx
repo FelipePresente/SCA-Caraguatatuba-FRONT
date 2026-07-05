@@ -10,20 +10,20 @@ import type { UserResponse } from '../services/types';
 import FoodCard from '../components/FoodCard';
 import logoImg from '../assets/logo.png';
 import { Footer } from '../components/Footer';
-import { 
-  BarChart as RechartsBarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  Tooltip, 
+import {
+  BarChart as RechartsBarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
   ResponsiveContainer,
   CartesianGrid
 } from 'recharts';
-import { 
-  LogOut, 
-  User, 
-  Menu, 
-  Check, 
+import {
+  LogOut,
+  User,
+  Menu,
+  Check,
   ArrowRight,
   Send,
   Trash2,
@@ -34,13 +34,13 @@ import {
 
 export const Dashboard: React.FC = () => {
   const { user, logout } = useAuth();
-  
+
   // Role Detection
   const roleObj = user?.role as { name?: string } | string | undefined;
   const roleName = (typeof roleObj === 'string' ? roleObj : roleObj?.name ?? '').toLowerCase();
   const isAdmin = roleName === 'admin';
   const isSchool = roleName === 'school';
-  
+
   // Navigation / Views states
   const [showAdminPanel, setShowAdminPanel] = useState(false);
 
@@ -56,21 +56,21 @@ export const Dashboard: React.FC = () => {
   const [schoolFoodSummary, setSchoolFoodSummary] = useState<SchoolFoodSummary[]>([]);
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [detailsError, setDetailsError] = useState<string | null>(null);
-  
+
   // Admin Panel states
   const [users, setUsers] = useState<UserResponse[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [adminError, setAdminError] = useState<string | null>(null);
-  
+
   // Edit user states
   const [editingUser, setEditingUser] = useState<UserResponse | null>(null);
   const [editUsername, setEditUsername] = useState('');
   const [editPassword, setEditPassword] = useState('');
-  
+
   // Overlay/Modal/Form states for creation
   const [showNewUserForm, setShowNewUserForm] = useState(false);
   const [showNewFoodForm, setShowNewFoodForm] = useState(false);
-  
+
   // Creation form values
   const [newUsername, setNewUsername] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -78,7 +78,7 @@ export const Dashboard: React.FC = () => {
   const [newFoodName, setNewFoodName] = useState('');
   const [newFoodPrice, setNewFoodPrice] = useState('');
   const [actionSubmitting, setActionSubmitting] = useState(false);
-  
+
   // School Dashboard form inputs
   const [receivedKg, setReceivedKg] = useState<string>('');
   const [wastedKg, setWastedKg] = useState<string>('');
@@ -373,57 +373,56 @@ export const Dashboard: React.FC = () => {
   if (isSchool) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col justify-between font-sans">
-        
+
         {/* Header matching mobile/desktop designs */}
-        <header className="bg-[#4180ab] text-white py-3 px-6 shadow-md flex items-center justify-between h-16 relative">
-          <div className="flex items-center gap-3">
-            <img src={logoImg} alt="Logo" className="w-[42px] h-[42px] object-contain bg-white/10 rounded-full p-0.5" />
-            <span className="text-xl font-bold tracking-wider">SCA</span>
-          </div>
-
-          {/* Desktop Right Buttons */}
-          <div className="hidden md:flex items-center gap-6">
-            <span className="text-sm font-semibold flex items-center gap-1.5 opacity-90">
-              <User className="w-4 h-4" /> {user?.username?.toUpperCase()}
-            </span>
-            <button 
-              onClick={logout} 
-              className="text-sm font-bold tracking-widest uppercase hover:text-red-200 transition-all"
-            >
-              SAIR
-            </button>
-          </div>
-
-          {/* Mobile Hamburguer Button */}
-          <div className="md:hidden">
-            <button 
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="focus:outline-none hover:bg-black/10 p-1.5 rounded-lg transition-colors"
-            >
-              <Menu className="w-7 h-7" />
-            </button>
-          </div>
-
-          {/* Mobile Menu Dropdown */}
-          {mobileMenuOpen && (
-            <div className="absolute top-16 right-4 bg-white text-gray-800 rounded-xl shadow-xl border border-gray-150 py-2 w-52 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-              <div className="px-4 py-2 text-xs font-bold text-gray-400 border-b border-gray-100 mb-1 uppercase">
-                {user?.username}
+        <header className="bg-[#4180ab] text-white sticky top-0 z-10 shadow-md">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <img src={logoImg} alt="Logo" className="w-[42px] h-[42px] object-contain bg-white/10 rounded-full p-0.5" />
+              <div>
+                <h1 className="text-xl font-bold tracking-tight">Sistema de Contabilidade Alimentícia</h1>
+                <p className="text-[10px] text-sky-100 uppercase tracking-widest font-semibold">Escola</p>
               </div>
-              <button 
-                onClick={() => { setMobileMenuOpen(false); logout(); }}
-                className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-650 text-sm font-medium"
+            </div>
+
+            <div className="flex items-center gap-3">
+              {/* Admin Area Button */}
+              {isAdmin && (
+                <button
+                  onClick={() => setShowAdminPanel(true)}
+                  className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all"
+                >
+                  Área Administrativa
+                </button>
+              )}
+
+              {/* User Badge */}
+              <div className="hidden sm:flex items-center gap-2 bg-white/15 px-3 py-1.5 rounded-full">
+                <User className="w-4 h-4 text-sky-100" />
+                <span className="text-sm font-medium text-white">{user?.username}</span>
+                {isAdmin && (
+                  <span className="bg-amber-100 text-amber-900 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">
+                    Admin
+                  </span>
+                )}
+              </div>
+
+              {/* Logout button */}
+              <button
+                onClick={logout}
+                className="flex items-center gap-2 bg-[#346b91] hover:bg-[#2d6e9c] text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 border border-white/20"
               >
+                <LogOut className="w-4 h-4" />
                 Sair
               </button>
             </div>
-          )}
+          </div>
         </header>
 
         {/* Dashboard Main Grid Area */}
-        <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-8">
-          <div className="flex flex-col md:flex-row items-stretch justify-center gap-8 lg:gap-12 mt-4">
-            
+        <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-8 flex items-center">
+          <div className="flex flex-col md:flex-row items-stretch justify-center gap-8 lg:gap-12 w-full">
+
             {/* Left Pane - ALIMENTOS List */}
             <div className="flex-1 max-w-md w-full bg-white rounded-3xl border border-gray-200 shadow-md p-6 flex flex-col">
               <h2 className="text-[#3b759e] font-extrabold text-lg text-center tracking-wider uppercase mb-6 pb-2 border-b border-gray-100">
@@ -446,16 +445,14 @@ export const Dashboard: React.FC = () => {
                       <button
                         key={food.id}
                         onClick={() => handleSelectSchoolFood(food)}
-                        className={`w-full flex items-center justify-between border-2 rounded-xl py-3 px-4 transition-all duration-200 text-left font-bold ${
-                          isSelected
-                            ? 'border-[#4180ab] bg-[#4180ab] text-white shadow-md scale-[1.01]'
-                            : 'border-[#4180ab] text-[#4180ab] hover:bg-sky-50'
-                        }`}
+                        className={`w-full flex items-center justify-between border-2 rounded-xl py-3 px-4 transition-all duration-200 text-left font-bold ${isSelected
+                          ? 'border-[#4180ab] bg-[#4180ab] text-white shadow-md scale-[1.01]'
+                          : 'border-[#4180ab] text-[#4180ab] hover:bg-sky-50'
+                          }`}
                       >
                         <span className="uppercase text-sm tracking-wide">{food.name}</span>
-                        <div className={`w-5 h-5 rounded-full flex items-center justify-center border ${
-                          isSelected ? 'border-white bg-white text-[#4180ab]' : 'border-[#4180ab] bg-white'
-                        }`}>
+                        <div className={`w-5 h-5 rounded-full flex items-center justify-center border ${isSelected ? 'border-white bg-white text-[#4180ab]' : 'border-[#4180ab] bg-white'
+                          }`}>
                           {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                         </div>
                       </button>
@@ -475,7 +472,7 @@ export const Dashboard: React.FC = () => {
 
             {/* Right Pane - Form Details Card */}
             <div className="flex-1 max-w-md w-full bg-[#d9d9d9] rounded-3xl overflow-hidden shadow-md border border-gray-300 flex flex-col">
-              
+
               {/* Form title header */}
               <div className="bg-[#4180ab] text-white text-center py-4 font-bold text-lg tracking-widest uppercase">
                 Registrar Dados
@@ -522,11 +519,10 @@ export const Dashboard: React.FC = () => {
 
                     {/* Submit Status Notification */}
                     {submitStatus && (
-                      <div className={`p-3 rounded-xl text-center text-xs font-bold border ${
-                        submitStatus.type === 'success' 
-                          ? 'bg-emerald-50 border-emerald-250 text-emerald-700' 
-                          : 'bg-red-50 border-red-250 text-red-700'
-                      }`}>
+                      <div className={`p-3 rounded-xl text-center text-xs font-bold border ${submitStatus.type === 'success'
+                        ? 'bg-emerald-50 border-emerald-250 text-emerald-700'
+                        : 'bg-red-50 border-red-250 text-red-700'
+                        }`}>
                         {submitStatus.message}
                       </div>
                     )}
@@ -562,33 +558,38 @@ export const Dashboard: React.FC = () => {
   if (isAdmin && showAdminPanel) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col justify-between font-sans">
-        
-        {/* Admin Header matching Mockup Menu */}
-        <header className="bg-[#4180ab] text-white py-3 px-6 shadow-md flex items-center justify-between h-16 relative">
-          <div className="flex items-center gap-3">
-            <img src={logoImg} alt="Logo" className="w-[42px] h-[42px] object-contain bg-white/10 rounded-full p-0.5" />
-            <span className="text-xl font-bold tracking-wider">SCA</span>
-          </div>
 
-          <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2 bg-white/15 px-3 py-1.5 rounded-full text-sm">
-              <User className="w-4 h-4 text-sky-100" />
-              <span>{user?.username}</span>
-              <span className="bg-amber-100 text-amber-900 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">Admin</span>
+        {/* Admin Header matching Mockup Menu */}
+        <header className="bg-[#4180ab] text-white sticky top-0 z-10 shadow-md">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <img src={logoImg} alt="Logo" className="w-[42px] h-[42px] object-contain bg-white/10 rounded-full p-0.5" />
+              <div>
+                <h1 className="text-xl font-bold tracking-tight">Sistema de Contabilidade Alimentícia</h1>
+                <p className="text-[10px] text-sky-100 uppercase tracking-widest font-semibold">Seduc Dashboard</p>
+              </div>
             </div>
-            <button 
-              onClick={() => setShowAdminPanel(false)}
-              className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all"
-            >
-              Alimentação
-            </button>
-            <button 
-              onClick={logout} 
-              className="flex items-center gap-2 bg-[#346b91] hover:bg-[#2d6e9c] text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all border border-white/20"
-            >
-              <LogOut className="w-4 h-4" />
-              Sair
-            </button>
+
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setShowAdminPanel(false)}
+                className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all"
+              >
+                Alimentação
+              </button>
+              <div className="hidden sm:flex items-center gap-2 bg-white/15 px-3 py-1.5 rounded-full text-sm">
+                <User className="w-4 h-4 text-sky-100" />
+                <span>{user?.username}</span>
+                <span className="bg-amber-100 text-amber-900 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">Admin</span>
+              </div>
+              <button
+                onClick={logout}
+                className="flex items-center gap-2 bg-[#346b91] hover:bg-[#2d6e9c] text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all border border-white/20"
+              >
+                <LogOut className="w-4 h-4" />
+                Sair
+              </button>
+            </div>
           </div>
         </header>
 
@@ -610,7 +611,7 @@ export const Dashboard: React.FC = () => {
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 mt-4 max-w-5xl mx-auto">
-            
+
             {/* Left Box - USUÁRIOS */}
             <div className="bg-[#d9d9d9] rounded-[2rem] p-6 shadow-md border border-gray-300 flex flex-col min-h-[450px] justify-between">
               <div>
@@ -625,7 +626,7 @@ export const Dashboard: React.FC = () => {
                 ) : (
                   <div className="space-y-2.5 max-h-[300px] overflow-y-auto pr-1">
                     {[...users].sort((a, b) => a.username.localeCompare(b.username)).map((u) => (
-                      <div 
+                      <div
                         key={u.id}
                         className="w-full bg-[#4180ab] text-white flex items-center justify-between rounded-xl py-3 px-4 shadow-sm font-bold uppercase text-xs sm:text-sm tracking-wide"
                       >
@@ -763,7 +764,7 @@ export const Dashboard: React.FC = () => {
                 ) : (
                   <div className="space-y-2.5 max-h-[300px] overflow-y-auto pr-1">
                     {[...schoolFoods].sort((a, b) => a.name.localeCompare(b.name)).map((f) => (
-                      <div 
+                      <div
                         key={f.id}
                         className="w-full bg-[#4180ab] text-white flex items-center justify-between rounded-xl py-3 px-4 shadow-sm font-bold uppercase text-xs sm:text-sm tracking-wide"
                       >
@@ -853,8 +854,8 @@ export const Dashboard: React.FC = () => {
           <div className="flex items-center gap-3">
             <img src={logoImg} alt="Logo" className="w-[42px] h-[42px] object-contain bg-white/10 rounded-full p-0.5" />
             <div>
-              <h1 className="text-xl font-bold tracking-tight">SCA Dashboard</h1>
-              <p className="text-[10px] text-sky-100 uppercase tracking-widest font-semibold">Seduc</p>
+              <h1 className="text-xl font-bold tracking-tight">Sistema de Contabilidade Alimentícia</h1>
+              <p className="text-[10px] text-sky-100 uppercase tracking-widest font-semibold">Seduc Dashboard</p>
             </div>
           </div>
 
@@ -863,7 +864,7 @@ export const Dashboard: React.FC = () => {
             {isAdmin && (
               <button
                 onClick={() => setShowAdminPanel(true)}
-                className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg flex items-center gap-1.5"
+                className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all"
               >
                 Área Administrativa
               </button>
@@ -895,7 +896,7 @@ export const Dashboard: React.FC = () => {
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         {selectedFoodDetails ? (
-          
+
           // --- DETAILED VIEW BY SCHOOL (IMAGE 2) ---
           <div className="bg-white rounded-3xl border border-gray-200 shadow-md p-6 sm:p-8 animate-in fade-in slide-in-from-bottom-4 duration-350">
             {/* Title Header */}
@@ -908,7 +909,7 @@ export const Dashboard: React.FC = () => {
                   Resumo detalhado por escola municipal
                 </p>
               </div>
-              <button 
+              <button
                 onClick={() => { setSelectedFoodDetails(null); setSchoolFoodSummary([]); }}
                 className="bg-gray-100 hover:bg-gray-200 text-gray-650 p-2.5 rounded-full transition-colors focus:outline-none"
               >
@@ -930,10 +931,10 @@ export const Dashboard: React.FC = () => {
                 Nenhum relatório escolar enviado para este alimento.
               </div>
             ) : (
-              
+
               // --- CAROUSEL OF CHARTS WITH NETFLIX-STYLE SHOWCASE ---
               <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
-                
+
                 {/* Chart Card 1: Kg Enviado */}
                 <div className="w-[85vw] md:w-[480px] flex-shrink-0 snap-center bg-gray-50 p-5 rounded-3xl border border-gray-200 shadow-sm flex flex-col h-[360px]">
                   <h4 className="text-center font-black text-[#4180ab] uppercase text-sm tracking-wider mb-4">
@@ -1046,9 +1047,9 @@ export const Dashboard: React.FC = () => {
 
               </div>
             )}
-            
+
             <div className="mt-8 text-center">
-              <button 
+              <button
                 onClick={() => { setSelectedFoodDetails(null); setSchoolFoodSummary([]); }}
                 className="bg-[#4180ab] hover:bg-[#346b91] text-white py-3 px-8 rounded-xl font-bold tracking-wider uppercase transition-colors shadow-md"
               >
@@ -1092,10 +1093,10 @@ export const Dashboard: React.FC = () => {
                   <p className="text-gray-500 font-medium">Nenhum dado de alimento encontrado.</p>
                 </div>
               ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
                   {[...foods].sort((a, b) => a.foodName.localeCompare(b.foodName)).map((food) => (
-                    <div 
-                      key={food.foodId} 
+                    <div
+                      key={food.foodId}
                       onClick={() => handleFoodCardClick(food)}
                       className="cursor-pointer flex flex-col"
                     >

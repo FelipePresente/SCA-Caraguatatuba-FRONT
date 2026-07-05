@@ -36,17 +36,17 @@ export const Footer: React.FC = () => {
 
         <div className="flex flex-col gap-2 font-bold tracking-widest text-sm uppercase">
           <a href="https://www.caraguatatuba.sp.gov.br" target="_blank" rel="noopener noreferrer" className="hover:underline text-sky-100">
-            SITE DO GOVERNO
+            SITE DA PREFEITURA
           </a>
         </div>
 
         <div className="flex flex-col items-center md:items-end gap-2">
           <span className="text-xs font-black tracking-widest uppercase">FEEDBACK</span>
           <div className="flex gap-4">
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all">
+            <a href="https://www.instagram.com/caraguatatuba_oficial/" target="_blank" rel="noopener noreferrer" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all">
               <InstagramIcon />
             </a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all">
+            <a href="https://www.facebook.com/prefeituradecaraguatatuba" target="_blank" rel="noopener noreferrer" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all">
               <FacebookIcon />
             </a>
             <a href="https://wa.me" target="_blank" rel="noopener noreferrer" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all">

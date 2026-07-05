@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useLoginForm } from '../hooks/useLoginForm';
 import logoImg from '../assets/logo.png';
-import { Eye, EyeOff, Menu } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { Footer } from '../components/Footer';
 
 export const Login: React.FC = () => {
   const { register, submit, error, isSubmitting } = useLoginForm();
   const [showPassword, setShowPassword] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen flex flex-col justify-between bg-gray-50 text-gray-800 font-sans">
@@ -15,33 +14,24 @@ export const Login: React.FC = () => {
       {/* HEADER */}
       <header className="bg-[#4180ab] text-white py-3 px-6 shadow-md flex items-center justify-between h-16 relative">
         <div className="text-2xl font-bold tracking-wider select-none">
-          SCA
+          Sistema de Contabilidade Alimentícia
         </div>
         
         {/* Middle Crest Logo */}
         <div className="absolute left-1/2 transform -translate-x-1/2">
-          <img src={logoImg} alt="Logo" className="w-[46px] h-[46px] object-contain bg-white/10 rounded-full p-0.5" />
+          <img src={logoImg} alt="Logo" className="w-15 h-15 object-contain bg-white/10 rounded-full p-0.5" />
         </div>
 
-        {/* Right Menu Icon (Hamburger) */}
         <div>
-          <button 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="focus:outline-none hover:bg-black/10 p-1.5 rounded-lg transition-colors"
+          <button
+            className="hover:underline font-black tracking-widest uppercase p-1.5 rounded-lg transition-colors"
             aria-label="Menu"
           >
-            <Menu className="w-7 h-7" />
+            <a href="https://www.caraguatatuba.sp.gov.br" target="_blank" rel="noopener noreferrer" className="">
+              Site da Prefeitura
+            </a>
           </button>
         </div>
-
-        {/* Mobile Menu Dropdown */}
-        {mobileMenuOpen && (
-          <div className="absolute top-16 right-4 bg-white text-gray-800 rounded-xl shadow-xl border border-gray-100 py-2 w-48 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-            <a href="https://www.caraguatatuba.sp.gov.br" target="_blank" rel="noopener noreferrer" className="block px-4 py-2 hover:bg-gray-100 text-sm font-medium">
-              Site do Governo
-            </a>
-          </div>
-        )}
       </header>
 
       {/* BODY CONTENT - Centered Card */}
