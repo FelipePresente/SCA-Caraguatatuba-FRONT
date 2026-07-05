@@ -22,7 +22,6 @@ import {
 import {
   LogOut,
   User,
-  Menu,
   Check,
   ArrowRight,
   Send,
@@ -84,7 +83,6 @@ export const Dashboard: React.FC = () => {
   const [wastedKg, setWastedKg] = useState<string>('');
   const [submitStatus, setSubmitStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [submittingReport, setSubmittingReport] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Load basic data based on role
   const loadData = async () => {
